@@ -10,7 +10,7 @@ public class Main extends JFrame {
 	private static final long serialVersionUID = -2965252528445049072L;
 
 	public Main() {
-		initUI();
+		 initUI();
 	}
 
 	private void initUI() {
@@ -30,5 +30,7 @@ public class Main extends JFrame {
 			ex.getContentPane().setBackground(Color.white);
 			((JComponent) ex.getContentPane()).setOpaque(false);
 		});
+
 	}
+
 }

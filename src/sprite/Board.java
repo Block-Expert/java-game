@@ -22,10 +22,10 @@ public class Board extends JPanel implements ActionListener {
 	private final int B_WIDTH = 1024;
 	private final int B_HEIGHT = 768;
 
-	private final int DOG_WIDTH = 256;
-	private final int DOG_HEIGHT = 128;
-	private final int STEP = 32;
-	private final int DELAY = 140;
+	private final int DOG_WIDTH = 128;
+	private final int DOG_HEIGHT = 64;
+	private final int STEP = 8;
+	private final int DELAY = 70;
 	private final int ORIGINAL_POS_Y = 100;
 
 	private Timer timer;
@@ -41,8 +41,9 @@ public class Board extends JPanel implements ActionListener {
 	private boolean is_pass_obstacle = false;
 
 	private int obstacle_x = 0;
-	private int obstacle_y = ORIGINAL_POS_Y + DOG_HEIGHT + 50;
-	private Image obstacle_image;
+	private int obstacle_y = ORIGINAL_POS_Y + DOG_HEIGHT;
+	private Image obstacle_image[] = new Image[3];
+	private int ob_index = 0;
 
 	public Board() {
 		initBoard();
@@ -57,7 +58,11 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	private void loadImages() {
-		obstacle_image = new ImageIcon("src/resources/obstacle.png").getImage();
+		for(int i = 0; i < 3; i++) {
+			String path = "src/resources/ob" + i + ".png";
+			ImageIcon imgIcon = new ImageIcon(path);
+			obstacle_image[i] = imgIcon.getImage();
+		}
 		for (int i = 0; i < IMAGE_COUNT; i++) {
 			String path = "src/resources/" + i + ".png";
 			ImageIcon imgIcon = new ImageIcon(path);
@@ -83,7 +88,7 @@ public class Board extends JPanel implements ActionListener {
 			is_start = false;
 			is_pass_obstacle = false;
 			obstacle_x = 0;
-			obstacle_y = ORIGINAL_POS_Y + DOG_HEIGHT + 50;
+			obstacle_y = ORIGINAL_POS_Y + DOG_HEIGHT;
 
 			locateObstacle();
 			
@@ -101,9 +106,10 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	private void locateObstacle() {
+		ob_index = (int) (Math.random() * 3);
 		obstacle_x = (((int) (Math.random() * B_WIDTH)) / STEP) * STEP;
-		if(obstacle_x < DOG_WIDTH) {
-			obstacle_x = DOG_WIDTH;
+		if(obstacle_x < 2 * DOG_WIDTH) {
+			obstacle_x = 2 * DOG_WIDTH;
 		}
 	}
 
@@ -122,7 +128,7 @@ public class Board extends JPanel implements ActionListener {
 				}
 			}
 
-			g.drawImage(obstacle_image, obstacle_x, obstacle_y, this);
+			g.drawImage(obstacle_image[ob_index], obstacle_x, obstacle_y, this);
 			g.drawImage(dogs[index], pos_x, pos_y, this);
 			Toolkit.getDefaultToolkit().sync();
 		} else {
@@ -147,20 +153,24 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	private void move() {
-		pos_x = (pos_x + STEP) % B_WIDTH;
+		//pos_x = (pos_x + STEP) % B_WIDTH;
 		index = (index + 1) % IMAGE_COUNT;
+		obstacle_x = obstacle_x - STEP;
 		
-		if ((pos_x + DOG_WIDTH) % B_WIDTH == obstacle_x) {
+		if (DOG_WIDTH == obstacle_x) {
 			if (pos_y == ORIGINAL_POS_Y) {
 				//is_start = false;
 				stopGame();
 			}
-			is_pass_obstacle = true;
 		}
 
 		if(is_pass_obstacle == true) {
 			locateObstacle();
 			is_pass_obstacle = false;
+		}
+		
+		if(obstacle_x == 0) {
+			is_pass_obstacle = true;
 		}
 
 	}
