@@ -25,7 +25,7 @@ public class Main extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			JFrame ex = new Main();
-			ex.setBounds(100, 100, 1024, 768);
+			ex.setBounds(100, 100, 1024, 320);
 			ex.setVisible(true);
 			ex.getContentPane().setBackground(Color.white);
 			((JComponent) ex.getContentPane()).setOpaque(false);
